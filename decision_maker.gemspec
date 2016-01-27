@@ -6,13 +6,14 @@ require 'decision_maker/version'
 Gem::Specification.new do |spec|
   spec.name          = "decision_maker"
   spec.version       = DecisionMaker::VERSION
-  spec.authors       = ["Sunao Tanabe"]
-  spec.email         = ["sunao-tanabe@bm-sms.co.jp"]
+  spec.authors       = ['sunaot']
+  spec.email         = ['sunao.tanabe@gmail.com']
 
-  spec.summary       = %q{TODO: Write a short summary, because Rubygems requires one.}
-  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
-  spec.license       = "MIT"
+  spec.summary       = %q{Easy way to treat complicated dispatching.}
+  spec.description   = %q{DecisionMaker is a library which help you to gerate simple decision table and make complicated dispatching logic much simpler.}
+  spec.homepage      = 'https://github.com/sunaot/decision_maker'
+  spec.license       = 'MIT'
+  spec.required_ruby_version = '>= 2.0.0'
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
   # delete this section to allow pushing this gem to any host.

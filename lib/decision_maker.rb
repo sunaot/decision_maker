@@ -1,56 +1,42 @@
 require_relative 'decision_maker/version'
+require_relative 'decision_maker/dsl'
+require_relative 'decision_maker/class_definition'
 
 module DecisionMaker
-  class Definition
-    attr_accessor :api_name, :rule_table
-    def name(api_name)
-      self.api_name = api_name
-    end
-
-    def table(rule_table)
-      self.rule_table = rule_table
-    end
+  #  @example DecisionMaker.generate
+  #    ticket_price = DecisionMaker.generate do
+  #      rule(
+  #        child:   { condition:  0..9,   action: 600 },
+  #        student: { condition: 10..16,  action: 1200 },
+  #        adult:   { condition: ->(age) { age > 16 }, action: 2000 },
+  #      )
+  #    end
+  #
+  #    ticket_price.call(20) #=> 2000
+  #
+  # @example Customizing names are available. It makes your code more illustrative
+  #    ticket_price = DecisionMaker.generate do
+  #      name           :calculate
+  #      condition_name :age
+  #      action_name    :price
+  #
+  #      rule(
+  #        child:   { age:  0..9,   price: 600 },
+  #        student: { age: 10..16,  price: 1200 },
+  #        adult:   { age: ->(age) { age > 16 }, price: 2000 },
+  #      )
+  #    end
+  #
+  #    ticket_price.calculate(20) #=> 2000
+  def self.generate(&definition)
+    decision_table = define(&definition)
+    decision_table.new
   end
 
   def self.define(&definition)
-    d = Definition.new
-    d.instance_eval(&definition)
-    c = Class.new
-    c.class_exec(d.api_name, d.rule_table) do |name, table|
-      const_set 'TABLE', table
-      define_method(name) do |key|
-        rule_table[label(key)][name]
-      end
-      define_method(:rule_table) do
-        self.class::TABLE
-      end
-      define_method(:label) do |key|
-        result = rule_table.find do |label, rule|
-          rule[:condition] === key
-        end
-        if result
-          result.first
-        else
-          raise
-        end
-      end
-    end
-    c
+    dsl = DSL.new
+    dsl.instance_eval(&definition)
+    d = dsl.definition
+    ClassDefinition.customize(d.rule_table, d.name, d.condition_name, d.action_name, d.error_handler)
   end
-end
-
-
-if __FILE__ == $0
-  BonusPoint = DecisionMaker.define do
-    name :point
-    table(
-      low:  { condition: 1..3, point: 10 },
-      mid:  { condition: 4..7, point: 5 },
-      high: { condition: 8..9, point: 3 },
-    )
-  end
-
-  bp = BonusPoint.new
-
-  puts bp.point(5)
 end

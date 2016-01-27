@@ -1,8 +1,6 @@
-# DecisionMaker
+# DecisionMaker [![Build Status](https://travis-ci.org/sunaot/decision_maker.svg?branch=master)](https://travis-ci.org/sunaot/decision_maker)
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/decision_maker`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+DecisionMaker is a library which help you to gerate simple decision table and make complicated dispatching logic much simpler. See Usage for details.
 
 ## Installation
 
@@ -22,7 +20,58 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Simple dynamic definition style.
+
+```ruby
+require 'decision_maker'
+
+ticket_price = DecisionMaker.generate do
+  rule(
+    child:   { condition:  0..9,   value: 600 },
+    student: { condition: 10..16,  value: 1200 },
+    adult:   { condition: ->(age) { age > 16 }, value: 2000 },
+  )
+end
+
+ticket_price.call(20) #=> 2000
+```
+
+Class definition style.
+
+```ruby
+require 'decision_maker'
+
+TicketPrice = DecisionMaker.define do
+  rule(
+    child:   { condition:  0..9,   value: 600 },
+    student: { condition: 10..16,  value: 1200 },
+    adult:   { condition: ->(age) { age > 16 }, value: 2000 },
+  )
+end
+
+ticket_price = TicketPrice.new
+ticket_price.call(20) #=> 2000
+```
+
+Dynamic definition style with some name customizes.
+
+```ruby
+require 'decision_maker'
+
+ticket_price = DecisionMaker.generate do
+  name           :calculate
+  condition_name :age
+  action_name    :price
+
+  rule(
+    child:   { age:  0..9,   price: 600 },
+    student: { age: 10..16,  price: 1200 },
+    adult:   { age: ->(age) { age > 16 }, price: 2000 },
+  )
+end
+
+ticket_price.calculate(20) #=> 2000
+```
 
 ## Development
 
@@ -32,7 +81,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/decision_maker.
+Bug reports and pull requests are welcome on GitHub at https://github.com/sunaot/decision_maker.
 
 
 ## License
