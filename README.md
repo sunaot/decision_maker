@@ -1,6 +1,6 @@
 # DecisionMaker [![Build Status](https://travis-ci.org/sunaot/decision_maker.svg?branch=master)](https://travis-ci.org/sunaot/decision_maker)
 
-DecisionMaker is a library which help you to gerate simple decision table and make complicated dispatching logic much simpler. See Usage for details.
+DecisionMaker is a library which behaves as a decision table and it makes complicated dispatching logic much simpler. See following usages for details.
 
 ## Installation
 
