@@ -53,7 +53,7 @@ ticket_price = TicketPrice.new
 ticket_price.call(20) #=> 2000
 ```
 
-Dynamic definition style with some name customizes.
+Dynamic definition style with some name customizations.
 
 ```ruby
 require 'decision_maker'
