@@ -130,4 +130,33 @@ class DecisionMakerTest < Minitest::Test
       dm.call(:unknown_key)
     end
   end
+
+  class UnknownConditionError < StandardError; end
+  def test_to_cutomize_error_handler
+    dm = DecisionMaker.generate do
+      on_error ->(key) { raise UnknownConditionError }
+      rule(a: { condition: 1, action: 'abc' })
+    end
+    assert_raises(UnknownConditionError) do
+      dm.call(2)
+    end
+  end
+
+  def a(n); "a is called: #{n}"; end
+  def b(n); "b is called: #{n}"; end
+  def c(n); "c is called: #{n}"; end
+  def test_dispatcher
+    a_caller = ->(n) { a(n) }
+    b_caller = ->(n) { b(n) }
+    c_caller = ->(n) { c(n) }
+    dispatcher = DecisionMaker.generate do
+      name :route
+      rule(
+        a: { condition: 1, action: ->(n) { a_caller.call(n) } },
+        b: { condition: 2, action: ->(n) { b_caller.call(n) } },
+        c: { condition: 3, action: ->(n) { c_caller.call(n) } },
+      )
+    end
+    assert_equal "b is called: 10", dispatcher.route(2).call(10)
+  end
 end
