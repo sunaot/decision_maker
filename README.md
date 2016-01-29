@@ -27,9 +27,9 @@ require 'decision_maker'
 
 ticket_price = DecisionMaker.generate do
   rule(
-    child:   { condition:  0..9,   value: 600 },
-    student: { condition: 10..16,  value: 1200 },
-    adult:   { condition: ->(age) { age > 16 }, value: 2000 },
+    child:   { condition:  0..9,   action: 600 },
+    student: { condition: 10..16,  action: 1200 },
+    adult:   { condition: ->(age) { age > 16 }, action: 2000 },
   )
 end
 
@@ -43,9 +43,9 @@ require 'decision_maker'
 
 TicketPrice = DecisionMaker.define do
   rule(
-    child:   { condition:  0..9,   value: 600 },
-    student: { condition: 10..16,  value: 1200 },
-    adult:   { condition: ->(age) { age > 16 }, value: 2000 },
+    child:   { condition:  0..9,   action: 600 },
+    student: { condition: 10..16,  action: 1200 },
+    adult:   { condition: ->(age) { age > 16 }, action: 2000 },
   )
 end
 
